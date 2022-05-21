@@ -26,7 +26,16 @@ class RemoteCocoDataSource implements IExplorerService {
 
   @override
   Future<Either<ErrorContent, List<Keywords>>> getValidKeywords() async {
-    // TODO: implement getKeywords
-    throw UnimplementedError();
+    await Future.delayed(Duration(seconds: 2));
+    final _keywords = [
+      Keywords(id: 1, word: 'house'),
+      Keywords(id: 2, word: 'sheep'),
+      Keywords(id: 3, word: 'dog'),
+      Keywords(id: 4, word: 'bike'),
+      Keywords(id: 5, word: 'bus'),
+      Keywords(id: 6, word: 'person'),
+      Keywords(id: 7, word: 'radio'),
+    ];
+    return Right(_keywords);
   }
 }

@@ -55,8 +55,9 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i13.GetImagesUseCase(get<_i11.IExplorerService>()));
   gh.lazySingleton<_i14.GetValidKeywordsUseCase>(
       () => _i14.GetValidKeywordsUseCase(get<_i11.IExplorerService>()));
-  gh.lazySingleton<_i15.ExplorerState>(
-      () => _i15.ExplorerState(getImagesUseCase: get<_i13.GetImagesUseCase>()));
+  gh.lazySingleton<_i15.ExplorerState>(() => _i15.ExplorerState(
+      getImagesUseCase: get<_i13.GetImagesUseCase>(),
+      getValidKeywordsUseCase: get<_i14.GetValidKeywordsUseCase>()));
   return get;
 }
 

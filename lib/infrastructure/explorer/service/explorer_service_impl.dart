@@ -19,14 +19,12 @@ class ExplorerServiceImpl extends IExplorerService {
   @override
   Future<Either<ErrorContent, List<EnhancedImage>>> getImages({
     required List<Keywords> keywords,
-  }) async {
-    // TODO: implement getImages
-    throw UnimplementedError();
+  }) {
+    return remote.getImages(keywords: keywords);
   }
 
   @override
-  Future<Either<ErrorContent, List<Keywords>>> getValidKeywords() async {
-    // TODO: implement getKeywords
-    throw UnimplementedError();
+  Future<Either<ErrorContent, List<Keywords>>> getValidKeywords() {
+    return remote.getValidKeywords();
   }
 }
