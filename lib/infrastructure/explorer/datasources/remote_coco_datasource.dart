@@ -5,6 +5,7 @@ import 'package:flutter_base/domain/core/failures.dart';
 import 'package:flutter_base/domain/explorer/entities/enhanced_image.dart';
 import 'package:flutter_base/domain/explorer/entities/keywords.dart';
 import 'package:flutter_base/domain/explorer/interfaces/i_explorer_service.dart';
+import 'package:flutter_base/domain/explorer/entities/enhanced_image.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
@@ -18,24 +19,75 @@ class RemoteCocoDataSource implements IExplorerService {
   @override
   Future<Either<ErrorContent, List<EnhancedImage>>> getImages({
     required List<Keywords> keywords,
-  }) {
-    // path base url + 'coco-dataset-bigquery'
-    // TODO: implement getImages
-    throw UnimplementedError();
+    int initialElement = 0,
+    int finalElement = 10,
+  }) async {
+    try {
+      //get images by keywords/category
+
+      final _categoriesIds = keywords.map((keyword) => keyword.id).toList();
+      final _responseWithImageIds =
+          await dio.post('/coco-dataset-bigquery', data: {
+        "category_ids": _categoriesIds,
+        "querytype": "getImagesByCats",
+      });
+      if (_responseWithImageIds.statusCode != 200) {
+        return Left(ErrorContent(message: 'Fail to get images'));
+      }
+
+      final _imagesToSearch = (_responseWithImageIds.data as List<dynamic>)
+          .sublist(initialElement, finalElement);
+
+      // 'getCaptions not needed
+      final queryTypes = ["getImages", "getInstances"];
+      final List<Future<Response<dynamic>>> _imageInfoFutures = [];
+
+      for (int i = 0; i < 2; i++) {
+        final _query = dio.post('/coco-dataset-bigquery', data: {
+          "image_ids": _imagesToSearch,
+          "querytype": queryTypes[i],
+        });
+        _imageInfoFutures.add(_query);
+      }
+      final _responses = await Future.wait(_imageInfoFutures);
+
+      if (_responses[0].statusCode != 200 || _responses[1].statusCode != 200) {
+        return Left(ErrorContent(message: 'Fail to get images or segments'));
+      }
+
+      final List<dynamic> _imageInfo = _responses[0].data;
+      final List<dynamic> _segmentsInfo = _responses[1].data;
+      // _segmentsInfo['segmentation'] has the image. More than 1 image is posible for image url
+      final List<EnhancedImage> _images = _imagesToSearch.map(
+        (imageId) {
+          return EnhancedImage(
+            id: imageId,
+            width: 0,
+            height: 0,
+            flickrUrl: _imageInfo.firstWhere(
+              (map) => map['id'] == imageId,
+              orElse: () => null,
+            )?['flickr_url'],
+            cocoUrl: _imageInfo.firstWhere(
+              (map) => map['id'] == imageId,
+              orElse: () => null,
+            )?['coco_url'],
+            dateCreated: DateTime.now(),
+            dateCaptured: DateTime.now(),
+          );
+        },
+      ).toList();
+
+      return Right(_images);
+    } catch (e) {
+      print(e);
+      return Left(ErrorContent(message: e.toString()));
+    }
   }
 
   @override
   Future<Either<ErrorContent, List<Keywords>>> getValidKeywords() async {
-    await Future.delayed(Duration(seconds: 2));
-    final _keywords = [
-      Keywords(id: 1, word: 'house'),
-      Keywords(id: 2, word: 'sheep'),
-      Keywords(id: 3, word: 'dog'),
-      Keywords(id: 4, word: 'bike'),
-      Keywords(id: 5, word: 'bus'),
-      Keywords(id: 6, word: 'person'),
-      Keywords(id: 7, word: 'radio'),
-    ];
-    return Right(_keywords);
+    // TODO: implement getValidKeywords
+    throw UnimplementedError();
   }
 }

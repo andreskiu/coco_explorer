@@ -24,6 +24,7 @@ abstract class RegisterModule {
   Dio dio() => Dio(
         BaseOptions(
           baseUrl: GetIt.I.get<EnvironmentConfig>().baseUrl,
+          receiveTimeout: 0,
         ),
       );
 

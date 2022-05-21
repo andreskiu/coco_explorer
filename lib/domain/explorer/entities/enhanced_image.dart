@@ -4,8 +4,6 @@ class EnhancedImage extends Equatable {
   final int id;
   final int width;
   final int height;
-  final String fileName;
-  final String url;
   final String flickrUrl;
   final String cocoUrl;
   final DateTime dateCreated;
@@ -15,8 +13,6 @@ class EnhancedImage extends Equatable {
     required this.id,
     required this.width,
     required this.height,
-    required this.fileName,
-    required this.url,
     required this.flickrUrl,
     required this.cocoUrl,
     required this.dateCreated,
@@ -28,8 +24,6 @@ class EnhancedImage extends Equatable {
         id,
         width,
         height,
-        fileName,
-        url,
         flickrUrl,
         cocoUrl,
         dateCaptured.millisecondsSinceEpoch,
@@ -40,8 +34,6 @@ class EnhancedImage extends Equatable {
     int? id,
     int? width,
     int? height,
-    String? fileName,
-    String? url,
     String? flickrUrl,
     String? cocoUrl,
     DateTime? dateCreated,
@@ -51,8 +43,6 @@ class EnhancedImage extends Equatable {
       id: id ?? this.id,
       width: width ?? this.width,
       height: height ?? this.height,
-      fileName: fileName ?? this.fileName,
-      url: url ?? this.url,
       flickrUrl: flickrUrl ?? this.flickrUrl,
       cocoUrl: cocoUrl ?? this.cocoUrl,
       dateCreated: dateCreated ?? this.dateCreated,

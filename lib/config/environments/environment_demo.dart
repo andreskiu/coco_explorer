@@ -5,7 +5,8 @@ import 'environment_config.dart';
 @Injectable(as: EnvironmentConfig)
 class EnvironmentDemo extends EnvironmentConfig {
   @override
-  String get baseUrl => 'https://us-central1-open-images-dataset.cloudfunctions.net/coco-dataset-bigquery';
+  String get baseUrl =>
+      'https://us-central1-open-images-dataset.cloudfunctions.net/';
 
   @override
   String get firebaseUrl => "use_with_local_data";

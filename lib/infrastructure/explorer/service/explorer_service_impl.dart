@@ -6,14 +6,17 @@ import 'package:flutter_base/domain/explorer/entities/enhanced_image.dart';
 import 'package:flutter_base/domain/explorer/entities/keywords.dart';
 import 'package:flutter_base/domain/explorer/interfaces/i_explorer_service.dart';
 
+import '../datasources/local_memory_datasource.dart';
 import '../datasources/remote_coco_datasource.dart';
 
 @LazySingleton(as: IExplorerService)
 class ExplorerServiceImpl extends IExplorerService {
   final RemoteCocoDataSource remote;
+  final LocalMemoryExplorerDatasource localMemory;
 
   ExplorerServiceImpl({
     required this.remote,
+    required this.localMemory,
   });
 
   @override
@@ -25,6 +28,6 @@ class ExplorerServiceImpl extends IExplorerService {
 
   @override
   Future<Either<ErrorContent, List<Keywords>>> getValidKeywords() {
-    return remote.getValidKeywords();
+    return localMemory.getValidKeywords();
   }
 }
