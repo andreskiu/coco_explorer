@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'figure.dart';
 
 class EnhancedImage extends Equatable {
   final int id;
@@ -8,6 +9,7 @@ class EnhancedImage extends Equatable {
   final String cocoUrl;
   final DateTime dateCreated;
   final DateTime dateCaptured;
+  final List<Figure> figures;
 
   EnhancedImage({
     required this.id,
@@ -17,6 +19,7 @@ class EnhancedImage extends Equatable {
     required this.cocoUrl,
     required this.dateCreated,
     required this.dateCaptured,
+    required this.figures,
   });
 
   @override
@@ -38,6 +41,7 @@ class EnhancedImage extends Equatable {
     String? cocoUrl,
     DateTime? dateCreated,
     DateTime? dateCaptured,
+    List<Figure>? figures,
   }) {
     return EnhancedImage(
       id: id ?? this.id,
@@ -47,6 +51,7 @@ class EnhancedImage extends Equatable {
       cocoUrl: cocoUrl ?? this.cocoUrl,
       dateCreated: dateCreated ?? this.dateCreated,
       dateCaptured: dateCaptured ?? this.dateCaptured,
+      figures: figures ?? this.figures,
     );
   }
 }
