@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base/application/explorer/explorer_state.dart';
 import 'package:flutter_base/presentation/core/responsivity/responsive_calculations.dart';
+import 'package:flutter_base/presentation/explorer/enhanced_image_draw.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
@@ -76,12 +77,9 @@ class _ImageListState extends State<ImageList> {
                   itemCount: state.images.length,
                   shrinkWrap: true,
                   itemBuilder: ((context, index) {
-                    return Container(
-                        margin: EdgeInsets.only(top: 2 * Info.verticalUnit),
-                        width: Info.horizontalUnit * 90,
-                        child: Image.network(state.images[index].cocoUrl)
-                        // CachedNetworkImage(imageUrl: state.images[index].cocoUrl),
-                        );
+                    return EnhancedImageDraw(
+                      image: state.images[index],
+                    );
                   }),
                 ),
               ),

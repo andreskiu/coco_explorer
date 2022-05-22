@@ -12,6 +12,9 @@ class Segment extends Equatable {
   });
 
   Figure toFigure() {
+    if (segmentation.isEmpty) {
+      return Figure(initialPoint: Point(0, 0), points: []);
+    }
     final _points = <Point>[];
     // extracted from renderSegms function in cocoexplorer.js file
     for (int m = 0; m < segmentation.length - 2; m += 2) {
@@ -35,9 +38,15 @@ class Segment extends Equatable {
 
   factory Segment.fromMap(Map<String, dynamic> map) {
     final _listNumbers = json.decode(map['segmentation']);
-    return Segment(
-      segmentation: List<double>.from(_listNumbers[0]),
-    );
+    try {
+      return Segment(
+        segmentation:
+            _listNumbers[0] == null ? [] : List<double>.from(_listNumbers[0]),
+      );
+    } catch (e) {
+      print(e);
+      return Segment(segmentation: []);
+    }
   }
 
   String toJson() => json.encode(toMap());
