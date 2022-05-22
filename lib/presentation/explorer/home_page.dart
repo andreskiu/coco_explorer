@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                                       return ListTile(
                                         key: ObjectKey(keyword),
                                         title: Text(keyword.word),
-                                        subtitle: Text(keyword.id.toString()),
+                                        tileColor: Colors.grey[200],
                                         onTap: () =>
                                             state.selectSuggestion(keyword),
                                       );
