@@ -64,12 +64,15 @@ class _ImageListState extends State<ImageList> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: 1.5 * Info.verticalUnit,
-                  horizontal: Info.horizontalUnit,
+              Visibility(
+                visible: state.totalImages != 0,
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: 1.5 * Info.verticalUnit,
+                    horizontal: Info.horizontalUnit,
+                  ),
+                  child: Text('${state.totalImages} results found'),
                 ),
-                child: Text('${state.totalImages} results found'),
               ),
               Flexible(
                 child: ListView.builder(

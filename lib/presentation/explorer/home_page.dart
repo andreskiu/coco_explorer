@@ -46,10 +46,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _onSearchPressed(
       BuildContext context, ExplorerState state) async {
-    setState(() {
-      _loadingImages = true;
-    });
-    state.images = [];
+    _loadingImages = true;
+    cleanCurrentSearch(state);
     await state.getImages(
       state.enteredKeywords,
       state.initialElement,
@@ -57,6 +55,13 @@ class _HomePageState extends State<HomePage> {
     );
     setState(() {
       _loadingImages = false;
+    });
+  }
+
+  void cleanCurrentSearch(ExplorerState state) {
+    setState(() {
+      state.images = [];
+      state.totalImages = 0;
     });
   }
 
@@ -96,8 +101,10 @@ class _HomePageState extends State<HomePage> {
                                       return InputChip(
                                         key: ObjectKey(keyword),
                                         label: Text(keyword.word),
-                                        onDeleted: () =>
-                                            state.deleteChip(keyword),
+                                        onDeleted: () {
+                                          cleanCurrentSearch(explorerState);
+                                          state.deleteChip(keyword);
+                                        },
                                         materialTapTargetSize:
                                             MaterialTapTargetSize.shrinkWrap,
                                       );
