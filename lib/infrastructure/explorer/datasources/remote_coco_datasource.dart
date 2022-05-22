@@ -5,8 +5,9 @@ import 'package:flutter_base/domain/core/failures.dart';
 import 'package:flutter_base/domain/explorer/entities/enhanced_image.dart';
 import 'package:flutter_base/domain/explorer/entities/keywords.dart';
 import 'package:flutter_base/domain/explorer/interfaces/i_explorer_service.dart';
-import 'package:flutter_base/domain/explorer/entities/enhanced_image.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../domain/explorer/entities/get_images_use_case_output.dart';
 
 @lazySingleton
 class RemoteCocoDataSource implements IExplorerService {
@@ -17,10 +18,10 @@ class RemoteCocoDataSource implements IExplorerService {
   });
 
   @override
-  Future<Either<ErrorContent, List<EnhancedImage>>> getImages({
+  Future<Either<ErrorContent, GetImagesUseCaseOutput>> getImages({
     required List<Keywords> keywords,
-    int initialElement = 0,
-    int finalElement = 10,
+    int initialSearchValue = 0,
+    int finalSearchValue = 10,
   }) async {
     try {
       //get images by keywords/category
@@ -36,7 +37,7 @@ class RemoteCocoDataSource implements IExplorerService {
       }
 
       final _imagesToSearch = (_responseWithImageIds.data as List<dynamic>)
-          .sublist(initialElement, finalElement);
+          .sublist(initialSearchValue, finalSearchValue);
 
       // 'getCaptions not needed
       final queryTypes = ["getImages", "getInstances"];
@@ -77,8 +78,13 @@ class RemoteCocoDataSource implements IExplorerService {
           );
         },
       ).toList();
-
-      return Right(_images);
+      final _output = GetImagesUseCaseOutput(
+        images: _images,
+        initialIndex: initialSearchValue,
+        finalIndex: finalSearchValue,
+        totalImages: _responseWithImageIds.data.length,
+      );
+      return Right(_output);
     } catch (e) {
       print(e);
       return Left(ErrorContent(message: e.toString()));

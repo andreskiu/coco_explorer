@@ -20,7 +20,11 @@ class ExplorerState extends ChangeNotifier {
 
   ErrorContent? error;
   List<Keywords> keywords = [];
+  List<Keywords> enteredKeywords = [];
   List<EnhancedImage> images = [];
+  int totalImages = 0;
+  int initialElement = 0;
+  int finalElement = 10;
   bool isLoadingKeywords = false;
 
   Future<bool> getValidKeywords() async {
@@ -41,19 +45,28 @@ class ExplorerState extends ChangeNotifier {
     return _keyWordsOrFailure.isRight();
   }
 
-  Future<bool> getImages(List<Keywords> keywordsInputed) async {
-    final _params = GetImagesUseCaseParams(keywords: keywordsInputed);
-    final _imagesOrFailure = await getImagesUseCase.call(_params);
-    _imagesOrFailure.fold(
+  Future<bool> getImages(
+    List<Keywords> keywordsInputed,
+    int initialElement,
+    int finalElement,
+  ) async {
+    final _params = GetImagesUseCaseParams(
+      keywords: keywordsInputed,
+      initialSearchValue: initialElement,
+      finalSearchValue: finalElement,
+    );
+    final _imagesInfoOrFailure = await getImagesUseCase.call(_params);
+    _imagesInfoOrFailure.fold(
       (fail) {
         error = fail;
       },
-      (enhancedImages) {
-        images = enhancedImages;
+      (imagesInfo) {
+        images.addAll(imagesInfo.images);
+        totalImages = imagesInfo.totalImages;
         error = null;
       },
     );
     notifyListeners();
-    return _imagesOrFailure.isRight();
+    return _imagesInfoOrFailure.isRight();
   }
 }

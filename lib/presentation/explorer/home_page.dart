@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base/domain/explorer/entities/keywords.dart';
 import 'package:flutter_base/presentation/core/responsivity/responsive_calculations.dart';
+import 'package:flutter_base/presentation/explorer/image_list.dart';
 import 'package:flutter_chips_input/flutter_chips_input.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late ExplorerState _state;
-  List<Keywords> _enteredKeywords = [];
+  bool _loadingImages = false;
+  // List<Keywords> _enteredKeywords = [];
   @override
   void initState() {
     super.initState();
@@ -42,6 +44,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _onSearchPressed(
+      BuildContext context, ExplorerState state) async {
+    setState(() {
+      _loadingImages = true;
+    });
+    state.images = [];
+    await state.getImages(
+      state.enteredKeywords,
+      state.initialElement,
+      state.finalElement,
+    );
+    setState(() {
+      _loadingImages = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,9 +78,6 @@ class _HomePageState extends State<HomePage> {
               builder: (context, explorerState, child) {
                 return Column(
                   children: [
-                    SizedBox(
-                      height: 3 * Info.verticalUnit,
-                    ),
                     explorerState.isLoadingKeywords
                         ? Center(
                             child: CircularProgressIndicator.adaptive(),
@@ -100,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                                     findSuggestions: (word) => _findSuggestions(
                                         word, explorerState.keywords),
                                     onChanged: (keywords) {
-                                      _enteredKeywords = keywords;
+                                      explorerState.enteredKeywords = keywords;
                                     },
                                   ),
                                 ),
@@ -108,14 +123,22 @@ class _HomePageState extends State<HomePage> {
                                   width: 5 * Info.horizontalUnit,
                                 ),
                                 ElevatedButton(
-                                  onPressed: () => explorerState.getImages(
-                                    _enteredKeywords,
+                                  onPressed: () => _onSearchPressed(
+                                    context,
+                                    explorerState,
                                   ),
                                   child: Text('Search'),
                                 )
                               ],
                             ),
                           ),
+                    Flexible(
+                      child: _loadingImages
+                          ? Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            )
+                          : ImageList(),
+                    )
                   ],
                 );
               },
